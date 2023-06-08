@@ -1,0 +1,21 @@
+from pyhive import hive
+import pandas as pd
+import warnings
+warnings.filterwarnings("ignore")
+
+from datetime import datetime, timedelta
+
+connection = hive.Connection(host="localhost", port=10000, database="coin_broker")
+dates = pd.read_sql("select min(current_time) from coin_broker.trade_volume", connection)
+
+start_date = dates['_c0'][0].replace(microsecond=0, second=0, minute=0)
+end_date = datetime.now().replace(microsecond=0, second=0, minute=0)
+
+def get_delta(d1, d2):
+    delta = d2 - d1
+    return delta
+
+delta = get_delta(start_date,end_date)
+for i in range(delta.days * 24 + 1):
+    print(start_date + timedelta(hours=i))
+    

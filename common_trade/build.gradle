@@ -1,0 +1,4 @@
+dependencies {
+    compile libraries.bson
+    compile 'org.scala-lang:scala-library:2.12.15'
+}

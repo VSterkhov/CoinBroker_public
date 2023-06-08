@@ -1,0 +1,5 @@
+rootProject.name = 'CoinBroker'
+include 'binance_kafka_producer'
+include 'common_trade'
+include 'spark_kafka_consumer'
+

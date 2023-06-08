@@ -1,0 +1,27 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+}
+
+shadowJar.archiveName = 'spark_kafka_consumer.jar'
+
+mainClassName = "ru.broom.spark_kafka_consumer.Main"
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.12.15'
+    compile libraries.spark_streaming_kafka
+    compile libraries.rxscala
+    compile libraries.mysql_driver
+
+    compileOnly(libraries.spark_hive)
+    compileOnly(libraries.spark_core)
+    compileOnly(libraries.spark_sql)
+    compileOnly(libraries.spark_streaming)
+
+
+    compile libraries.jackson_databind
+    compile libraries.jackson_scala_module
+    compile project(':common_trade')
+
+
+}
+

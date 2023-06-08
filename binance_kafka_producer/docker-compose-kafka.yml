@@ -1,0 +1,59 @@
+version: '2'
+
+volumes:
+  coin-broker-kafka:
+
+networks:
+  coin-broker-net:
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.3
+    container_name: zookeeper
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - coin-broker-net
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.3
+    container_name: kafka
+    hostname: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
+      #KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
+      #KAFKA_LOG_RETENTION_HOURS: 1
+      #KAFKA_LOG_CLEANUP_POLICY: delete
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    volumes:
+      - ./logs:/tmp/docker/kafka1/logs
+      - ./data:/tmp/docker/kafka1/data
+    networks:
+      - coin-broker-net
+
+  binance_kafka_producer:
+    image: sterkhov/binance_kafka_producer
+    container_name: binance_kafka_producer
+    hostname: binance_kafka_producer
+    depends_on:
+      - broker
+    environment:
+      BOOTSTRAP_SERVERS_CONFIG: 'broker:9092'
+      KEY_SERIALIZER_CLASS_CONFIG: 'org.apache.kafka.common.serialization.StringSerializer'
+      VALUE_SERIALIZER_CLASS_CONFIG: 'org.apache.kafka.connect.json.JsonSerializer'
+    networks:
+      - coin-broker-net

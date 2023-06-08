@@ -1,0 +1,5 @@
+/.gradle/*
+/.idea/*
+/binance_kafka_producer/build
+/common_trade/build
+/spark_kafka_consumer/build

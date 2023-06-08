@@ -1,0 +1,22 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+}
+
+mainClassName = "ru.broom.binance_kafka_producer.Main"
+
+dependencies {
+    compile libraries.sttp
+    compile(name: 'binance-java-api-master', ext: 'jar')
+
+    compile 'org.scala-lang:scala-library:2.12.15'
+
+    compile libraries.converter_jackson
+    compile libraries.commons_lang3
+    compile libraries.commons_codec
+    compile libraries.kafka_clients
+    compile libraries.kafka_connect_json
+    compile libraries.jackson_databind
+    compile libraries.jackson_scala_module
+    compile libraries.rxscala
+    compile project(':common_trade')
+}
